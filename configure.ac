@@ -6,6 +6,7 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_HEADERS([whisperlib/base/core_config.h])
 
 AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_CXX
 
 AC_PROG_YACC
@@ -43,6 +44,18 @@ AS_IF([test "x$have_icu" = "xyes"],
   [AS_IF([test "x$with_icu" = "xyes"],
     [AC_MSG_ERROR([ICU library requested but not found])])
     ])
+
+# Add check for OpenSSL. Let the user disable the use of OpenSSL if it's
+# present on the system by passing --disable-openssl to configure.
+AC_ARG_ENABLE(openssl,
+  [AS_HELP_STRING([--enable-openssl],
+   [Whether to use OpenSSL or not (default use it if OpenSSL is installed)])])
+
+if test "$enable_openssl" = "" -o "$enable_openssl" = "yes"; then
+  AX_CHECK_OPENSSL(
+   [AC_DEFINE([USE_OPENSSL], [1], [Whether to use OpenSSL or not])
+    ])
+fi
 
 AX_CHECK_ZLIB([],
     [AC_MSG_ERROR([Zlib was not found])])
@@ -111,6 +124,6 @@ AC_FUNC_MKTIME
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([atexit bzero clock_gettime ftruncate getcwd gethostbyname gettimeofday localeconv localtime_r memmove memset mkdir regcomp rmdir setlocale socket strcasecmp strchr strdup strerror strncasecmp strpbrk strrchr strtol strtoul strtoull readdir_r lseek64 fdatasync stat64 fpathconf dirfd getaddrinfo inet_pton])
+AC_CHECK_FUNCS([atexit bzero clock_gettime ftruncate getcwd gethostbyname gettimeofday localeconv localtime_r memmove memset mkdir regcomp rmdir setlocale socket strcasecmp strchr strdup strerror strncasecmp strpbrk strrchr strtol strtoul strtoull readdir_r lseek64 fdatasync stat64 fpathconf dirfd getaddrinfo inet_pton kqueue kevent64])
 
 AC_OUTPUT

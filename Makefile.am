@@ -4,7 +4,7 @@ AM_DEFAULT_SOURCE_EXT = .cc
 
 lib_LIBRARIES = whisperlib/libwhisperlib.a
 
-LDADD = whisperlib/libwhisperlib.a $(ICU_LIBS)
+LDADD = whisperlib/libwhisperlib.a $(ICU_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 
 if HAVE_ICU
 EXTRA_whisperlib_libwhisperlib_a_SOURCES = \

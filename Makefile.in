@@ -94,6 +94,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_gflags.m4 \
 	$(top_srcdir)/m4/ax_check_glog.m4 \
 	$(top_srcdir)/m4/ax_check_icu.m4 \
+	$(top_srcdir)/m4/ax_check_openssl.m4 \
 	$(top_srcdir)/m4/ax_check_protobuf.m4 \
 	$(top_srcdir)/m4/ax_check_zlib.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 $(top_srcdir)/configure.ac
@@ -322,124 +323,142 @@ whisperlib_base_test_lru_cache_test_OBJECTS =  \
 whisperlib_base_test_lru_cache_test_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
 whisperlib_base_test_lru_cache_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_base_test_strutil_test_SOURCES =  \
 	whisperlib/base/test/strutil_test.cc
 whisperlib_base_test_strutil_test_OBJECTS =  \
 	whisperlib/base/test/strutil_test.$(OBJEXT)
 whisperlib_base_test_strutil_test_LDADD = $(LDADD)
 whisperlib_base_test_strutil_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_http_test_failsafe_test_SOURCES =  \
 	whisperlib/http/test/failsafe_test.cc
 whisperlib_http_test_failsafe_test_OBJECTS =  \
 	whisperlib/http/test/failsafe_test.$(OBJEXT)
 whisperlib_http_test_failsafe_test_LDADD = $(LDADD)
 whisperlib_http_test_failsafe_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_http_test_http_header_test_SOURCES =  \
 	whisperlib/http/test/http_header_test.cc
 whisperlib_http_test_http_header_test_OBJECTS =  \
 	whisperlib/http/test/http_header_test.$(OBJEXT)
 whisperlib_http_test_http_header_test_LDADD = $(LDADD)
 whisperlib_http_test_http_header_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_http_test_http_request_test_SOURCES =  \
 	whisperlib/http/test/http_request_test.cc
 whisperlib_http_test_http_request_test_OBJECTS =  \
 	whisperlib/http/test/http_request_test.$(OBJEXT)
 whisperlib_http_test_http_request_test_LDADD = $(LDADD)
 whisperlib_http_test_http_request_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_http_test_http_server_test_SOURCES =  \
 	whisperlib/http/test/http_server_test.cc
 whisperlib_http_test_http_server_test_OBJECTS =  \
 	whisperlib/http/test/http_server_test.$(OBJEXT)
 whisperlib_http_test_http_server_test_LDADD = $(LDADD)
 whisperlib_http_test_http_server_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_io_buffer_test_data_block_test_SOURCES =  \
 	whisperlib/io/buffer/test/data_block_test.cc
 whisperlib_io_buffer_test_data_block_test_OBJECTS =  \
 	whisperlib/io/buffer/test/data_block_test.$(OBJEXT)
 whisperlib_io_buffer_test_data_block_test_LDADD = $(LDADD)
 whisperlib_io_buffer_test_data_block_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_io_buffer_test_memory_stream_test_SOURCES =  \
 	whisperlib/io/buffer/test/memory_stream_test.cc
 whisperlib_io_buffer_test_memory_stream_test_OBJECTS =  \
 	whisperlib/io/buffer/test/memory_stream_test.$(OBJEXT)
 whisperlib_io_buffer_test_memory_stream_test_LDADD = $(LDADD)
 whisperlib_io_buffer_test_memory_stream_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_io_checkpoint_test_checkpointing_test_SOURCES =  \
 	whisperlib/io/checkpoint/test/checkpointing_test.cc
 whisperlib_io_checkpoint_test_checkpointing_test_OBJECTS =  \
 	whisperlib/io/checkpoint/test/checkpointing_test.$(OBJEXT)
 whisperlib_io_checkpoint_test_checkpointing_test_LDADD = $(LDADD)
 whisperlib_io_checkpoint_test_checkpointing_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_io_checkpoint_test_state_keeper_test_SOURCES =  \
 	whisperlib/io/checkpoint/test/state_keeper_test.cc
 whisperlib_io_checkpoint_test_state_keeper_test_OBJECTS =  \
 	whisperlib/io/checkpoint/test/state_keeper_test.$(OBJEXT)
 whisperlib_io_checkpoint_test_state_keeper_test_LDADD = $(LDADD)
 whisperlib_io_checkpoint_test_state_keeper_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_io_logio_test_logio_test_SOURCES =  \
 	whisperlib/io/logio/test/logio_test.cc
 whisperlib_io_logio_test_logio_test_OBJECTS =  \
 	whisperlib/io/logio/test/logio_test.$(OBJEXT)
 whisperlib_io_logio_test_logio_test_LDADD = $(LDADD)
 whisperlib_io_logio_test_logio_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_io_logio_test_recordio_test_SOURCES =  \
 	whisperlib/io/logio/test/recordio_test.cc
 whisperlib_io_logio_test_recordio_test_OBJECTS =  \
 	whisperlib/io/logio/test/recordio_test.$(OBJEXT)
 whisperlib_io_logio_test_recordio_test_LDADD = $(LDADD)
 whisperlib_io_logio_test_recordio_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_net_test_address_test_SOURCES =  \
 	whisperlib/net/test/address_test.cc
 whisperlib_net_test_address_test_OBJECTS =  \
 	whisperlib/net/test/address_test.$(OBJEXT)
 whisperlib_net_test_address_test_LDADD = $(LDADD)
 whisperlib_net_test_address_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_net_test_dns_resolver_test_SOURCES =  \
 	whisperlib/net/test/dns_resolver_test.cc
 whisperlib_net_test_dns_resolver_test_OBJECTS =  \
 	whisperlib/net/test/dns_resolver_test.$(OBJEXT)
 whisperlib_net_test_dns_resolver_test_LDADD = $(LDADD)
 whisperlib_net_test_dns_resolver_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_net_test_selectable_filereader_test_SOURCES =  \
 	whisperlib/net/test/selectable_filereader_test.cc
 whisperlib_net_test_selectable_filereader_test_OBJECTS =  \
 	whisperlib/net/test/selectable_filereader_test.$(OBJEXT)
 whisperlib_net_test_selectable_filereader_test_LDADD = $(LDADD)
 whisperlib_net_test_selectable_filereader_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_net_test_selector_test_SOURCES =  \
 	whisperlib/net/test/selector_test.cc
 whisperlib_net_test_selector_test_OBJECTS =  \
 	whisperlib/net/test/selector_test.$(OBJEXT)
 whisperlib_net_test_selector_test_LDADD = $(LDADD)
 whisperlib_net_test_selector_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_net_test_udp_connection_test_SOURCES =  \
 	whisperlib/net/test/udp_connection_test.cc
 whisperlib_net_test_udp_connection_test_OBJECTS =  \
 	whisperlib/net/test/udp_connection_test.$(OBJEXT)
 whisperlib_net_test_udp_connection_test_LDADD = $(LDADD)
 whisperlib_net_test_udp_connection_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_rpc_test_rpc_test_client_SOURCES =  \
 	whisperlib/rpc/test/rpc_test_client.cc
 whisperlib_rpc_test_rpc_test_client_OBJECTS =  \
 	whisperlib/rpc/test/rpc_test_client.$(OBJEXT)
-am__DEPENDENCIES_2 = whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+am__DEPENDENCIES_2 = whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 @HAVE_GLOG_TRUE@whisperlib_rpc_test_rpc_test_client_DEPENDENCIES =  \
 @HAVE_GLOG_TRUE@	whisperlib/rpc/test/rpc_test_proto.pb.o \
 @HAVE_GLOG_TRUE@	$(am__DEPENDENCIES_2)
@@ -456,7 +475,8 @@ whisperlib_url_test_url_test_OBJECTS =  \
 	whisperlib/url/test/url_test.$(OBJEXT)
 whisperlib_url_test_url_test_LDADD = $(LDADD)
 whisperlib_url_test_url_test_DEPENDENCIES =  \
-	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1)
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -866,6 +886,9 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
+OPENSSL_INCLUDES = @OPENSSL_INCLUDES@
+OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
+OPENSSL_LIBS = @OPENSSL_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -874,6 +897,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
 POW_LIB = @POW_LIB@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
@@ -940,7 +964,7 @@ top_srcdir = @top_srcdir@
 dist_doc_DATA = README.md
 AM_DEFAULT_SOURCE_EXT = .cc
 lib_LIBRARIES = whisperlib/libwhisperlib.a
-LDADD = whisperlib/libwhisperlib.a $(ICU_LIBS)
+LDADD = whisperlib/libwhisperlib.a $(ICU_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 @HAVE_ICU_FALSE@EXTRA_whisperlib_libwhisperlib_a_SOURCES = \
 @HAVE_ICU_FALSE@  whisperlib/url/simple_url.cc
 

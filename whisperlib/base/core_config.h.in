@@ -159,6 +159,12 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `kevent64' function. */
+#undef HAVE_KEVENT64
+
+/* Define to 1 if you have the `kqueue' function. */
+#undef HAVE_KQUEUE
+
 /* Define to 1 if you have `z' library (-lz) */
 #undef HAVE_LIBZ
 
@@ -389,6 +395,9 @@
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
+
+/* Whether to use OpenSSL or not */
+#undef USE_OPENSSL
 
 /* Version number of package */
 #undef VERSION
