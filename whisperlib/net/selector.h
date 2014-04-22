@@ -61,6 +61,7 @@
 
 namespace io {
   class File;
+  class MemoryStream;
 }
 
 namespace net {

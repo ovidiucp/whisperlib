@@ -495,15 +495,6 @@ bool TcpAcceptor::HandleErrorEvent(const SelectorEventData& event) {
     return true;
   }
 # if defined(HAVE_SYS_EPOLL_H)
-  if ( events & POLLNVAL )
-# else
-  if ( events & POLLNVAL )
-# endif
-  {
-    ECONNLOG << "POLLNVAL on server socket";
-    return true;
-  }
-# if defined(HAVE_SYS_EPOLL_H)
   if ( events & EPOLLERR )
 # else
   if ( events & POLLERR )

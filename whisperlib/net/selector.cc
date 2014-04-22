@@ -195,7 +195,6 @@ void Selector::Loop() {
       // it's fd value.
       bool keep_processing = true;
       if ( desire & kWantError ) {
-        LOG_INFO << "Need to handle error: " << event.kqdata_;
         keep_processing = s->HandleErrorEvent(event) &&
                           s->GetFd() != INVALID_FD_VALUE;
       }
@@ -206,12 +205,11 @@ void Selector::Loop() {
       if ( keep_processing && (desire & kWantWrite) ) {
         s->HandleWriteEvent(event);
       }
+#if defined(HAVE_KQUEUE)
       if ( keep_processing && (desire & kWantMonitor) ) {
         keep_processing = (s->HandleReadEvent(event) &&
                            s->GetFd() != INVALID_FD_VALUE);
       }
-#if defined(HAVE_KQUEUE)
-
 #endif
     }  // else, was probably a timeout
 #ifdef _DEBUG
@@ -559,9 +557,10 @@ void Selector::UpdateDesire(Selectable* s, bool enable, int32 desire) {
 void Selector::_InitializeInotify() {
   ifd_ = inotify_init();
   ifd_reader_ = new SelectableFilereader(this);
-  ifd_reader_.InitializeFd(ifd_,
-                           NewCallback(this, _HandleChangeNotification),
-                           NULL);
+  ifd_reader_->InitializeFd(
+      ifd_,
+      NewPermanentCallback(this, &Selector::_HandleChangeNotification),
+      NULL);
 }
 
 void Selector::_DestroyInotify() {
@@ -584,7 +583,7 @@ void Selector::_HandleChangeNotification(io::MemoryStream* in) {
       break;
     }
     if (ev.len == 0) {
-      LOG_ERROR << "Invalid empty file name read for inotify event, ignoring";
+      LOG_INFO << "Invalid empty file name read for inotify event, ignoring";
     } else {
       // The filename is specified, read it from the buffer, so we can properly
       // process the rest of the notification events.
@@ -644,8 +643,8 @@ bool Selector::RegisterFileForChangeNotifications(io::File* file,
   CHECK(file);
   CHECK(handler && handler->is_permanent());
 
-  const InotifyFileToDescriptorMap::iterator it = ifd_map_.find(file);
-  if (it != ifd_map_.end()) {
+  const InotifyFileToDescriptorMap::iterator it = ifile_map_.find(file);
+  if (it != ifile_map_.end()) {
     LOG_INFO << "File has already been registered for change notifications, "
              << "ignoring: " << file->filename();
     return false;
@@ -654,6 +653,7 @@ bool Selector::RegisterFileForChangeNotifications(io::File* file,
   int wfd = inotify_add_watch(ifd_, file->filename().c_str(), IN_ALL_EVENTS);
   ifile_map_.insert(make_pair(file, wfd));
   ifd_map_.insert(make_pair(wfd, file));
+  ihandler_map_.insert(make_pair(file, handler));
   return true;
 }
 
@@ -662,7 +662,7 @@ bool Selector::UnregisterFileForChangeNotifications(io::File* file)
   CHECK(file);
 
   const InotifyFileToDescriptorMap::iterator it = ifile_map_.find(file);
-  if (it == ifd_map_.end()) {
+  if (it == ifile_map_.end()) {
     LOG_INFO << "File has not been registered for change notifications, "
              << "ignoring: " << file->filename();
     return false;
@@ -676,7 +676,12 @@ bool Selector::UnregisterFileForChangeNotifications(io::File* file)
   CHECK(it2 != ifd_map_.end());
   ifd_map_.erase(it2);
 
+  const InotifyFileToHandlerMap::iterator it3 = ihandler_map_.find(file);
+  CHECK(it3 != ihandler_map_.end());
+  ihandler_map_.erase(it3);
+
   CHECK_EQ(ifile_map_.size(), ifd_map_.size());
+  CHECK_EQ(ifile_map_.size(), ihandler_map_.size());
   return true;
 }
 
