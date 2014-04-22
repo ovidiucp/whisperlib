@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Authors: Cosmin Tudorache & Catalin Popescu
+// Authors: Cosmin Tudorache, Catalin Popescu, Ovidiu Predescu
 //
 // Base for Selector - we have different implementations if we use
 // poll - most portable, epoll - great for linux, kevents - great for bsd
@@ -36,9 +36,13 @@
 #ifndef __NET_BASE_SELECTOR_BASE_H__
 #define __NET_BASE_SELECTOR_BASE_H__
 
+#include <whisperlib/base/core_config.h>
+
 #include <vector>
 #include <whisperlib/base/types.h>
 #include <whisperlib/net/selector_event_data.h>
+
+#include WHISPER_HASH_MAP_HEADER
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -54,9 +58,13 @@
 #define EPOLLRDHUP 0
 #endif
 
-#elif defined(HAVE_POLL_H) || defined(HAVE_SYS_POLL_H)
+#elif defined(HAVE_KQUEUE)
 
-#include WHISPER_HASH_MAP_HEADER
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+
+#elif defined(HAVE_POLL_H) || defined(HAVE_SYS_POLL_H)
 
 #ifdef HAVE_POLL_H
 #include "poll.h"
@@ -75,6 +83,10 @@
 #error "Need poll or epoll available"
 
 #endif
+
+namespace io {
+  class File;
+}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -103,15 +115,15 @@ class SelectorBase {
   bool LoopStep(int32 timeout_in_ms,
                 vector<SelectorEventData>*  events);
 
- private:
+private:
   const int max_events_per_step_;
 
+#if defined(HAVE_SYS_EPOLL_H)
   //////////////////////////////////////////////////////////////////////
   //
   // EPOLL version
   //
 
-#if defined(HAVE_SYS_EPOLL_H)
   // Converts a Selector desire in some epoll flags.
   int DesiresToEpollEvents(int32 desires);
 
@@ -121,26 +133,64 @@ class SelectorBase {
   // here we get events that we poll
   struct epoll_event* const events_;
 
-#else
+#elif defined(HAVE_KQUEUE)
+  //////////////////////////////////////////////////////////////////////
+  //
+  // KQUEUE version
+  //
 
+  // Maximum number of events we're willing to process in a single go.
+  static const int kMaxProcessed = 1024;
+
+  // The event queue
+  int kq_;
+
+# if defined(HAVE_KEVENT64)
+  vector<kevent64_s> events_;
+  struct kevent64_s fdEvents_[kMaxProcessed];
+# else
+  vector<kevent> events_;
+  struct kevent fdEvents_[kMaxProcessed];
+# endif
+
+  //  Updates the (fd, kevent_type) in kq_. This is done by adding the
+  //  (fd, kevent_type) to the events_ array, which is passed to
+  //  kevent() system call in LoopStep().
+  //
+  // `kevent_type` is determined by `desires` in the following way:
+  //
+  // desires & kWantRead will enter in kqueue (fd, EVFILT_READ)
+  // desires & kWantWrite will enter in kqueue (fd, EVFILT_WRITE)
+  // desires & kWantError will enter in kqueue two entries:
+  //    (fd, EVFILT_READ) and (fd, EVFILT_WRITE)
+  //
+  // Action is EV_ADD or EV_DELETE.
+  bool _Add(int fd, void* user_data, int action, int32 desires);
+
+#else
   //////////////////////////////////////////////////////////////////////
   //
   // POLL version
   //
 
-  // Converts a Selector desire in some poll flags.
-  int DesiresToPollEvents(int32 desires);
   // Compacts the fds table at the end of a loop step
   void Compact();
 
   static const int kMaxFds = 4096;
-  // epoll file descriptor
-  struct pollfd fds_[kMaxFds];
+
   // how many in fds are used
   size_t fds_size_;
+
+  // epoll file descriptor
+  struct pollfd fds_[kMaxFds];
+
   // maps from fd to index in fds_ and user data
   typedef hash_map< int, pair<size_t, void*> > DataMap;
   DataMap fd_data_;
+
+  // Converts a Selector desire in some poll flags.
+  int DesiresToPollEvents(int32 desires);
+
   // indices that we need to compact at the end of the step
   vector<size_t> indices_to_compact_;
 #endif

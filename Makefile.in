@@ -310,7 +310,8 @@ am__EXEEXT_4 = whisperlib/base/test/lru_cache_test$(EXEEXT) \
 	whisperlib/net/test/dns_resolver_test$(EXEEXT) \
 	whisperlib/net/test/selector_test$(EXEEXT) \
 	whisperlib/net/test/udp_connection_test$(EXEEXT) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3)
+	whisperlib/net/test/file_change_test$(EXEEXT) $(am__EXEEXT_2) \
+	$(am__EXEEXT_3)
 am__EXEEXT_5 = whisperlib/http/test/failsafe_test$(EXEEXT) \
 	whisperlib/http/test/http_request_test$(EXEEXT) \
 	whisperlib/net/test/selectable_filereader_test$(EXEEXT)
@@ -429,6 +430,14 @@ whisperlib_net_test_dns_resolver_test_LDADD = $(LDADD)
 whisperlib_net_test_dns_resolver_test_DEPENDENCIES =  \
 	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+whisperlib_net_test_file_change_test_SOURCES =  \
+	whisperlib/net/test/file_change_test.cc
+whisperlib_net_test_file_change_test_OBJECTS =  \
+	whisperlib/net/test/file_change_test.$(OBJEXT)
+whisperlib_net_test_file_change_test_LDADD = $(LDADD)
+whisperlib_net_test_file_change_test_DEPENDENCIES =  \
+	whisperlib/libwhisperlib.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 whisperlib_net_test_selectable_filereader_test_SOURCES =  \
 	whisperlib/net/test/selectable_filereader_test.cc
 whisperlib_net_test_selectable_filereader_test_OBJECTS =  \
@@ -522,6 +531,7 @@ SOURCES = $(whisperlib_libwhisperlib_a_SOURCES) \
 	whisperlib/io/logio/test/recordio_test.cc \
 	whisperlib/net/test/address_test.cc \
 	whisperlib/net/test/dns_resolver_test.cc \
+	whisperlib/net/test/file_change_test.cc \
 	whisperlib/net/test/selectable_filereader_test.cc \
 	whisperlib/net/test/selector_test.cc \
 	whisperlib/net/test/udp_connection_test.cc \
@@ -544,6 +554,7 @@ DIST_SOURCES = $(am__whisperlib_libwhisperlib_a_SOURCES_DIST) \
 	whisperlib/io/logio/test/recordio_test.cc \
 	whisperlib/net/test/address_test.cc \
 	whisperlib/net/test/dns_resolver_test.cc \
+	whisperlib/net/test/file_change_test.cc \
 	whisperlib/net/test/selectable_filereader_test.cc \
 	whisperlib/net/test/selector_test.cc \
 	whisperlib/net/test/udp_connection_test.cc \
@@ -1193,6 +1204,7 @@ standalone_test_programs = \
   whisperlib/net/test/dns_resolver_test \
   whisperlib/net/test/selector_test \
   whisperlib/net/test/udp_connection_test \
+  whisperlib/net/test/file_change_test \
   $(glog_check_programs) \
   $(glog_icu_check_programs)
 
@@ -1722,6 +1734,13 @@ whisperlib/net/test/dns_resolver_test.$(OBJEXT):  \
 whisperlib/net/test/dns_resolver_test$(EXEEXT): $(whisperlib_net_test_dns_resolver_test_OBJECTS) $(whisperlib_net_test_dns_resolver_test_DEPENDENCIES) $(EXTRA_whisperlib_net_test_dns_resolver_test_DEPENDENCIES) whisperlib/net/test/$(am__dirstamp)
 	@rm -f whisperlib/net/test/dns_resolver_test$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(whisperlib_net_test_dns_resolver_test_OBJECTS) $(whisperlib_net_test_dns_resolver_test_LDADD) $(LIBS)
+whisperlib/net/test/file_change_test.$(OBJEXT):  \
+	whisperlib/net/test/$(am__dirstamp) \
+	whisperlib/net/test/$(DEPDIR)/$(am__dirstamp)
+
+whisperlib/net/test/file_change_test$(EXEEXT): $(whisperlib_net_test_file_change_test_OBJECTS) $(whisperlib_net_test_file_change_test_DEPENDENCIES) $(EXTRA_whisperlib_net_test_file_change_test_DEPENDENCIES) whisperlib/net/test/$(am__dirstamp)
+	@rm -f whisperlib/net/test/file_change_test$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(whisperlib_net_test_file_change_test_OBJECTS) $(whisperlib_net_test_file_change_test_LDADD) $(LIBS)
 whisperlib/net/test/selectable_filereader_test.$(OBJEXT):  \
 	whisperlib/net/test/$(am__dirstamp) \
 	whisperlib/net/test/$(DEPDIR)/$(am__dirstamp)
@@ -1870,6 +1889,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/$(DEPDIR)/udp_connection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/test/$(DEPDIR)/address_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/test/$(DEPDIR)/dns_resolver_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/test/$(DEPDIR)/file_change_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/test/$(DEPDIR)/selectable_filereader_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/test/$(DEPDIR)/selector_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@whisperlib/net/test/$(DEPDIR)/udp_connection_test.Po@am__quote@
@@ -2235,6 +2255,13 @@ whisperlib/net/test/selector_test.log: whisperlib/net/test/selector_test$(EXEEXT
 whisperlib/net/test/udp_connection_test.log: whisperlib/net/test/udp_connection_test$(EXEEXT)
 	@p='whisperlib/net/test/udp_connection_test$(EXEEXT)'; \
 	b='whisperlib/net/test/udp_connection_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+whisperlib/net/test/file_change_test.log: whisperlib/net/test/file_change_test$(EXEEXT)
+	@p='whisperlib/net/test/file_change_test$(EXEEXT)'; \
+	b='whisperlib/net/test/file_change_test'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

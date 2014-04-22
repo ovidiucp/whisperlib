@@ -256,6 +256,7 @@ standalone_test_programs = \
   whisperlib/net/test/dns_resolver_test \
   whisperlib/net/test/selector_test \
   whisperlib/net/test/udp_connection_test \
+  whisperlib/net/test/file_change_test \
   $(glog_check_programs) \
   $(glog_icu_check_programs)
 

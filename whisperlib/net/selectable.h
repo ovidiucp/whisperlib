@@ -48,6 +48,10 @@ class Selectable {
       : selector_(selector),
         desire_(Selector::kWantRead | Selector::kWantError) {
   }
+  explicit Selectable(Selector* selector, int desire)
+      : selector_(selector),
+        desire_(desire) {
+  }
 
   virtual ~Selectable() {
   }

@@ -460,35 +460,55 @@ bool TcpAcceptor::HandleWriteEvent(const SelectorEventData& event) {
 
 bool TcpAcceptor::HandleErrorEvent(const SelectorEventData& event) {
 #ifndef __USE_LEAN_SELECTOR__
-  //////////////////////////////////////////////////////////////////////
-  //
-  // EPOLL & EPOLL version
-  //
   const int events = event.internal_event_;
   ECONNLOG << "HandleErrorEvent: 0x" << std::hex << events;
-#if defined(HAVE_SYS_EPOLL_H)
-  if ( events & EPOLLHUP )
+
+#if defined(HAVE_KQUEUE)
+  if (events & (EV_EOF | EV_ERROR)) {
+    ECONNLOG << "HandleErrorEvent: events: " << events
+             << ", error: " << event.kqdata_;
+    InternalClose(event.kqdata_);
+    return true;
+  }
+
 #else
+  //////////////////////////////////////////////////////////////////////
+  //
+  // EPOLL & POLL version
+  //
+# if defined(HAVE_SYS_EPOLL_H)
+  if ( events & EPOLLHUP )
+# else
   if ( events & POLLHUP )
-#endif
+# endif
   {
     ECONNLOG << "HUP on server socket";
     return true;
   }
-#if defined(HAVE_SYS_EPOLL_H)
+# if defined(HAVE_SYS_EPOLL_H)
   if ( events & EPOLLRDHUP )
-#else
+# else
   if ( events & POLLRDHUP )
-#endif
+# endif
   {
     ECONNLOG << "RDHUP on server socket";
     return true;
   }
-#if defined(HAVE_SYS_EPOLL_H)
+# if defined(HAVE_SYS_EPOLL_H)
+  if ( events & POLLNVAL )
+# else
+  if ( events & POLLNVAL )
+# endif
+  {
+    ECONNLOG << "POLLNVAL on server socket";
+    return true;
+  }
+# if defined(HAVE_SYS_EPOLL_H)
   if ( events & EPOLLERR )
-#else
+# else
   if ( events & POLLERR )
-#endif
+# endif
+#endif /* POLL and EPOLL */
   {
     const int err = ExtractSocketErrno();
     ECONNLOG << local_address().ToString()  << " HandleErrorEvent err=" << err
@@ -796,7 +816,7 @@ bool TcpConnection::HandleReadEvent(const SelectorEventData& event) {
 
 bool TcpConnection::HandleWriteEvent(const SelectorEventData& event) {
   CHECK(state() != DISCONNECTED) << "Invalid state: " << StateName();
-  D10CONNLOG << "HandleWriteEvent: " << std::hex << event.internal_event_;
+  LOG_INFO << "HandleWriteEvent: " << std::hex << event.internal_event_;
 
   if ( state() == CONNECTING ) {
     set_state(CONNECTED);
@@ -871,6 +891,26 @@ bool TcpConnection::HandleWriteEvent(const SelectorEventData& event) {
 }
 
 bool TcpConnection::HandleErrorEvent(const SelectorEventData& event) {
+#if defined(HAVE_KQUEUE)
+  CHECK_NE(state(), DISCONNECTED);
+
+  const int events = event.internal_event_;
+  if (events & EV_EOF) {
+    ECONNLOG << "HandleErrorEvent: EV_EOF";
+    InternalClose(event.kqdata_, true);
+  }
+
+  if (events & EV_ERROR) {
+    ECONNLOG << "HandleErrorEvent: EV_ERROR data value " << event.kqdata_;
+    InternalClose(event.kqdata_, true);
+  }
+
+  return true;
+#else
+  //////////////////////////////////////////////////////////////////////
+  //
+  // EPOLL and POLL version
+  //
 #ifndef __USE_LEAN_SELECTOR__
   CHECK_NE(state(), DISCONNECTED);
 
@@ -973,6 +1013,8 @@ bool TcpConnection::HandleErrorEvent(const SelectorEventData& event) {
   ECONNLOG << "HandleErrorEvent: unknown event: 0x" << std::hex << events;
 #endif  // __USE_LEAN_SELECTOR__
   return true;
+
+#endif /* POLL and EPOLL */
 }
 
 void TcpConnection::Close() {

@@ -123,6 +123,7 @@ class EchoServerConnection {
     timeouter_.SetTimeout(kReadEvent, kReadTimeout);
   }
   virtual ~EchoServerConnection() {
+    DCONNLOG << "EchoServerConnection destructor";
     delete net_connection_;
     net_connection_ = NULL;
   }
@@ -467,6 +468,8 @@ void StartEchoConnection(int32 num_to_start,
 //////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
+  FLAGS_logtostderr = 1;
+  FLAGS_v = 20;
   common::Init(argc, argv);
   net::Selector selector;
 

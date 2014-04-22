@@ -32,18 +32,40 @@
 #ifndef __NET_BASE_SELECTOR_EVENT_DATA_H__
 #define __NET_BASE_SELECTOR_EVENT_DATA_H__
 
+#include <whisperlib/base/core_config.h>
+
 namespace net {
 
 struct SelectorEventData {
   void* data_;
   int32 desires_;
   int internal_event_;
-  SelectorEventData(void* data,
-                    int32 desires,
-                    int internal_event)
-      : data_(data),
-        desires_(desires),
-        internal_event_(internal_event) {
+#if defined(HAVE_KQUEUE)
+# if defined(HAVE_KEVENT64)
+  int64_t kqdata_;
+# else
+  intptr_t kqdata_;
+# endif
+#endif
+ SelectorEventData(void* data,
+                   int32 desires,
+                   int internal_event
+#if defined(HAVE_KQUEUE)
+                   ,
+# if defined(HAVE_KEVENT64)
+                   int64_t kqdata
+# else
+                   intptr_t kqdata
+# endif
+#endif
+                   )
+     : data_(data),
+      desires_(desires),
+      internal_event_(internal_event)
+#if defined(HAVE_KQUEUE)
+      , kqdata_(kqdata)
+#endif
+  {
   }
 };
 

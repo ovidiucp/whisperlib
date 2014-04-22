@@ -32,6 +32,8 @@
 #ifndef __NET_BASE_SELECTOR_H__
 #define __NET_BASE_SELECTOR_H__
 
+#include <whisperlib/base/core_config.h>
+
 #include <sys/types.h>
 #include <list>
 #include <deque>
@@ -51,11 +53,21 @@
 #include <whisperlib/net/selector_base.h>
 #endif
 
+#if defined(HAVE_SYS_INOTIFY_H)
+#include <sys/inotify.h>
+#endif
+
 // Just a helper function
+
+namespace io {
+  class File;
+}
 
 namespace net {
 
 class Selectable;
+class SelectableFilereader;
+class KqueueFileChangeSelectable;
 
 // //////////////////
 //
@@ -107,6 +119,33 @@ class Selector {
     return tid_ == pthread_self();
   }
 
+  //////////////////////////////////////////////////////////////////////
+  // File change notification events
+  //////////////////////////////////////////////////////////////////////
+  enum ChangeEvent {
+    kFileDeleted = 0x1, // File was deleted
+    kFileModified = 0x2, // File was modified
+    kFileAttributes = 0x4, // File's attributes have changed
+    kFileRenamed = 0x08, // File was renamed
+    kFileOther = 0x10 // Other file change occurred
+  };
+
+  // The callback that is invoked when a file changes on the disk. The
+  // third argument is a mask specifying the events that took place.
+  typedef Callback3<net::Selector*, io::File*, int> FileChangedHandler;
+
+  // Registers a callback to be invoked when the file changes on the
+  // disk. Note you can only register one callback to be notified for
+  // each file. Subsequent calls of this method again for the same
+  // file will be ignored. You need to call
+  // UnregisterFileForChangeNotifications to unregister a previously
+  // registered callback.
+  bool RegisterFileForChangeNotifications(io::File* file,
+                                          FileChangedHandler* callback);
+
+  // Unregister the file from all the events.
+  bool UnregisterFileForChangeNotifications(io::File* file);
+
   //
   // Runs this closure in the select loop
   // - THIS IS SAFE TO CALL FROM ANOTHER THREAD -
@@ -141,6 +180,10 @@ class Selector {
   static const int32 kWantRead  = 1;
   static const int32 kWantWrite = 2;
   static const int32 kWantError = 4;
+#if defined(HAVE_KQUEUE)
+  // Used only by the kqueue implementation to monitor file descriptors.
+  static const int32 kWantMonitor = 8;
+#endif
 
  private:
   // helper that turns on/off fd desires in the assoiciated RegistrationData
@@ -218,6 +261,50 @@ class Selector {
 
   // called when we end our loop
   Closure* call_on_close_;
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // File change notification events
+  //
+  //////////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Inotify on Linux
+  //
+#if defined(HAVE_SYS_INOTIFY_H)
+  // File descriptor used by inotify
+  int ifd_;
+  SelectableFilereader* ifd_reader_;
+
+  // Map from file object to file descriptor.
+  typedef hash_map< io::File*, int > InotifyFileToDescriptorMap;
+  InotifyFileToDescriptorMap ifile_map_;
+
+  // Map from file descriptor to file object
+  typedef hash_map< int, io::File* > InotifyDescriptorToFileMap;
+  InotifyDescriptorToFileMap ifd_map_;
+
+  typedef hash_map< io::File*, FileChangedHandler* > InotifyFileToHandlerMap;
+  InotifyFileToHandlerMap ihandler_map_;
+
+  void _InitializeInotify();
+  void _DestroyInotify();
+  void _HandleChangeNotification(io::MemoryStream* in);
+  int _WatchMaskToEvent(int evmask);
+#endif
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Kqueue on BSD, including MacOS X
+  //
+#if defined(HAVE_KQUEUE)
+  typedef hash_map< io::File*, net::KqueueFileChangeSelectable* >
+      KqFileToSelectableMap;
+  KqFileToSelectableMap kqfile_map_;
+
+  void _DestroyKqueueNotifiers();
+#endif
 
   DISALLOW_EVIL_CONSTRUCTORS(Selector);
 };

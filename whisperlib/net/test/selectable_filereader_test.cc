@@ -72,15 +72,16 @@ DEFINE_int32(expected_bytes,
 int fd[2];
 int64 total_bytes = 0;
 net::Selector selector;
+net::SelectableFilereader reader(&selector);
 
 void PrintFileData(io::MemoryStream* in) {
   string s;
   in->ReadString(&s);
   total_bytes += s.size();
   LOG_INFO << "READ: [" << s << "]";
-  if (s == "FIN\n") {
+  if (s.find("FIN\n") != string::npos) {
     LOG(INFO) << "Got end";
-    close(fd[0]);
+    reader.Close();
   }
 }
 
@@ -95,7 +96,6 @@ int main(int argc, char* argv[]) {
   CHECK_NE(pid, -1);
   if (pid) {
     LOG(INFO) << "Parent: " << getpid();
-    net::SelectableFilereader reader(&selector);
     CHECK(reader.InitializeFd(fd[0],
                               NewPermanentCallback(PrintFileData),
                               NewCallback(&selector,
