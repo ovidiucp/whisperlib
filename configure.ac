@@ -92,7 +92,7 @@ AM_CONDITIONAL([HAVE_PROTOBUF], [test "$have_protobuf" = "yes"])
 AC_C_BIGENDIAN
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/stat.h sys/time.h unistd.h nameser8_compat.h endian.h sys/epoll.h sys/poll.h poll.h execinfo.h mach/mach_time.h sys/uio.h bits/limits.h openssl/ssl.h eventfd.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/stat.h sys/time.h unistd.h nameser8_compat.h endian.h sys/epoll.h sys/poll.h poll.h execinfo.h mach/mach_time.h sys/uio.h bits/limits.h openssl/ssl.h eventfd.h sys/inotify.h])
 
 AC_CHECK_HEADERS([unordered_set tr1/unordered_set ext/hash_set unordered_map tr1/unordered_map ext/hash_map functional functional_hash.h tr1/functional_hash.h ext/hash_fun.h])
 
