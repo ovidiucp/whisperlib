@@ -117,6 +117,8 @@ class File {
     return fd_;
   }
 
+  bool Rename(const string& new_name);
+
   // Returns current file size. The file must be opened.
   // (Uses local cached variable: size_)
   int64 Size() const;

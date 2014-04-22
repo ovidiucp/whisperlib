@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdio.h>
 
 #include "whisperlib/base/log.h"
 // #include "whisperlib/base/common.h"
@@ -197,6 +198,17 @@ void File::Close() {
   filename_.clear();
   size_ = 0;
   position_ = 0;
+}
+
+bool File::Rename(const string& new_name) {
+  int result = rename(filename_.c_str(), new_name.c_str());
+  if (result == -1) {
+    LOG_ERROR << "Could not rename file from " << filename_
+              << " to " << new_name;
+    return false;
+  }
+  filename_ = new_name;
+  return true;
 }
 
 int64 File::Size() const {
