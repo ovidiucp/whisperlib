@@ -5891,7 +5891,8 @@ $as_echo "$ICU_LIBS" >&6; }
   fi
 
   if test $succeeded = yes; then
-     $as_echo "#define HAVE_ICU 1" >>confdefs.h
+
+$as_echo "#define HAVE_ICU 1" >>confdefs.h
 
     have_icu=yes
 
@@ -6066,13 +6067,14 @@ $as_echo "yes" >&6; }
 
 $as_echo "#define USE_OPENSSL 1" >>confdefs.h
 
+    have_openssl=yes
 
 
 else
 
             { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-
+            have_openssl=no
 
 fi
 rm -f core conftest.err conftest.$ac_objext \
@@ -6531,7 +6533,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     have_glog=no
   else
     LIBS="-lglog $ax_save_LIBS"
-    $as_echo "#define HAVE_GLOG 1" >>confdefs.h
+
+$as_echo "#define HAVE_GLOG 1" >>confdefs.h
 
    have_glog=yes
   fi
@@ -6597,7 +6600,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     have_gflags=no
   else
     LIBS="-lgflags $ax_save_LIBS"
-    $as_echo "#define HAVE_GFLAGS 1" >>confdefs.h
+
+$as_echo "#define HAVE_GFLAGS 1" >>confdefs.h
 
    have_gflags=yes
   fi
@@ -6751,7 +6755,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     have_protobuf=no
   else
     LIBS="-lprotobuf $ax_save_LIBS"
-    $as_echo "#define HAVE_PROTOBUF 1" >>confdefs.h
+
+$as_echo "#define HAVE_PROTOBUF 1" >>confdefs.h
 
    have_protobuf=yes
   fi
@@ -10075,3 +10080,34 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
+
+textreset=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+standout=$(tput smso)
+bold=$(tput bold)
+
+yesno() {
+    arg="$*"
+    if [ "$arg" = "yes" ]; then
+        echo "${green}${standout} yes ${textreset}"
+    else
+        echo "${red}${standout}  no ${textreset}"
+    fi
+}
+
+message() {
+    arg="$*"
+    echo "${bold}$arg${textreset}"
+}
+
+cat <<EOF
+
+Whisperlib is configured to use the following:
+  $(message glog)     :    $(yesno ${have_glog})
+  $(message gflags)   :    $(yesno ${have_gflags})
+  $(message protobuf) :    $(yesno ${have_protobuf})
+  $(message ICU)      :    $(yesno ${have_icu})
+  $(message OpenSSL)  :    $(yesno ${have_openssl})
+
+EOF
