@@ -32,7 +32,7 @@ AC_ARG_WITH([icu],
 
 AS_IF([test "x$with_icu" != "xno"],
   [AX_CHECK_ICU([4.8],
-   [AC_DEFINE(HAVE_ICU)
+   [AC_DEFINE([HAVE_ICU], [1], [Set if ICU is found])
     have_icu=yes
    ])],
   [have_icu=no])
@@ -54,20 +54,22 @@ AC_ARG_ENABLE(openssl,
 if test "$enable_openssl" = "" -o "$enable_openssl" = "yes"; then
   AX_CHECK_OPENSSL(
    [AC_DEFINE([USE_OPENSSL], [1], [Whether to use OpenSSL or not])
-    ])
+    have_openssl=yes
+    ],
+    [have_openssl=no])
 fi
 
 AX_CHECK_ZLIB([],
     [AC_MSG_ERROR([Zlib was not found])])
 
 AX_CHECK_GLOG(
-  [AC_DEFINE(HAVE_GLOG)
+  [AC_DEFINE([HAVE_GLOG], [1], [Set if glog is found])
    have_glog=yes],
   [have_glog=no])
 AM_CONDITIONAL([HAVE_GLOG], [test "$have_glog" = "yes"])
 
 AX_CHECK_GFLAGS(
-  [AC_DEFINE(HAVE_GFLAGS)
+  [AC_DEFINE([HAVE_GFLAGS], [1], [Set if gflags is found])
    have_gflags=yes],
   [have_gflags=no])
 AM_CONDITIONAL([HAVE_GFLAGS], [test "$have_gflags" = "yes"])
@@ -84,7 +86,7 @@ You must also install the gflags library!])
 fi
 
 AX_CHECK_PROTOBUF(
-  [AC_DEFINE(HAVE_PROTOBUF)
+  [AC_DEFINE([HAVE_PROTOBUF], [1], [Set if protobuf is found])
    have_protobuf=yes],
   [have_protobuf=no])
 AM_CONDITIONAL([HAVE_PROTOBUF], [test "$have_protobuf" = "yes"])
@@ -127,3 +129,34 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit bzero clock_gettime ftruncate getcwd gethostbyname gettimeofday localeconv localtime_r memmove memset mkdir regcomp rmdir setlocale socket strcasecmp strchr strdup strerror strncasecmp strpbrk strrchr strtol strtoul strtoull readdir_r lseek64 fdatasync stat64 fpathconf dirfd getaddrinfo inet_pton kqueue kevent64])
 
 AC_OUTPUT
+
+textreset=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+standout=$(tput smso)
+bold=$(tput bold)
+
+yesno() {
+    arg="$*"
+    if [[ "$arg" = "yes" ]]; then
+        echo "${green}${standout} yes ${textreset}"
+    else
+        echo "${red}${standout}  no ${textreset}"
+    fi
+}
+
+message() {
+    arg="$*"
+    echo "${bold}$arg${textreset}"
+}
+
+cat <<EOF
+
+Whisperlib is configured to use the following:
+  $(message glog)     :    $(yesno ${have_glog})
+  $(message gflags)   :    $(yesno ${have_gflags})
+  $(message protobuf) :    $(yesno ${have_protobuf})
+  $(message ICU)      :    $(yesno ${have_icu})
+  $(message OpenSSL)  :    $(yesno ${have_openssl})
+
+EOF
